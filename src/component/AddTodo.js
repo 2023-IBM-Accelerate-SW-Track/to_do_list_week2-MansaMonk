@@ -34,6 +34,14 @@ class AddTodo extends Component {
     }
   };
 
+  // Bonus: Pressing the "Enter" key will equate to pressing the "ADD" submit button
+  handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      this.handleSubmit(event);
+    }
+  }
+
   render() {
     return (
       // 1. When rendering a component, you can render as many elements as you like as long as it is wrapped inside
@@ -48,6 +56,7 @@ class AddTodo extends Component {
           label="Add New Item"
           variant="outlined"
           onChange={this.handleChange}
+          onKeyPress={this.handleKeyPress} // action for "Enter" key
           value={this.state.content}
         />
         <Button
