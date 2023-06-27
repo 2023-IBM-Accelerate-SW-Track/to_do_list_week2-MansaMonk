@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Button, TextField } from "@mui/material";
+import { DesktopDatePicker , LocalizationProvider} from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 class AddTodo extends Component {
   // Create a local react state of the this component with a content property set to nothing.
@@ -7,6 +9,7 @@ class AddTodo extends Component {
     super();
     this.state = {
       content: "",
+      date: "", // Adds a new key called "date" set to an empty string to represent the date.
     };
   }
   // The handleChange function updates the react state with the new input value provided from the user.
@@ -15,8 +18,16 @@ class AddTodo extends Component {
   handleChange = (event) => {
     this.setState({
       content: event.target.value,
+      date: new Date().toLocaleString('en-us'), // updates value of "date" key
+      due: null, // new key "due" (due date) set to null
     });
   };
+
+  handleDateChange = (event) => {
+    this.setState({
+      due: new Date(event),
+    });
+  }
   // The handleSubmit function collects the forms input and puts it into the react state.
   // event.preventDefault() is called to prevents default event behavior like refreshing the browser.
   // this.props.addTodo(this.state) passes the current state (or user input) into the addTodo function defined
@@ -27,9 +38,20 @@ class AddTodo extends Component {
       this.props.addTodo(this.state);
       this.setState({
         content: "",
+        date: "", // set "date" key back to empty string
+        due: null, // clear the due date once form is submitted
       });
     }
   };
+
+  // Bonus: Pressing the "Enter" key will equate to pressing the "ADD" submit button
+  handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      this.handleSubmit(event);
+    }
+  }
+
   render() {
     return (
       // 1. When rendering a component, you can render as many elements as you like as long as it is wrapped inside
@@ -44,8 +66,18 @@ class AddTodo extends Component {
           label="Add New Item"
           variant="outlined"
           onChange={this.handleChange}
+          onKeyPress={this.handleKeyPress} // action for "Enter" key
           value={this.state.content}
         />
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DesktopDatePicker
+            id="new-item-date"
+            label="Due Date"
+            value={this.state.due ? new Date(this.state.due) : null/*value*/}
+            onChange={this.handleDateChange/*onChange*/}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
         <Button
           style={{ marginLeft: "10px" }}
           onClick={this.handleSubmit}
