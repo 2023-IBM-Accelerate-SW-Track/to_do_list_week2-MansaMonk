@@ -14,6 +14,10 @@ class Home extends Component {
   // the addTodo function simply creates a new array that includes the user submitted todo item and then
   // updates the state with the new list.
   addTodo = (todo) => {
+    if (todo.due === null || todo.due === "Invalid Date") {
+      return; // do nothing if not a valid date
+    }
+
     const isDuplicate = this.state.todos.some((item) => item.content === todo.content);
 
     if (isDuplicate) {

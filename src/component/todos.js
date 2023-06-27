@@ -12,16 +12,25 @@ import { Card, Grid, ListItemButton, ListItemText, Checkbox } from "@mui/materia
 const Todos = ({ todos, deleteTodo }) => {
   const todoList = todos.length ? (
     todos.map((todo) => {
+      let color = "#ffffff"; // white
+      const dueDate = new Date(todo.date);
+      const currentDate = new Date();
+      if (dueDate.getTime() < currentDate.getTime()) {
+        color = "red"; // make the color red for overdue tasks
+      }
+
       return (
         <Grid key={todo.id}>
-          <Card style={{marginTop:10}}>
+          <Card style={{ marginTop: 10, background: color }} data-testid={todo.content}>
             {/* Remember, we set the local state of this todo item when the user submits the form in 
             AddTodo.js. All we need to do is return the todo list item {todo.content} */}
             <ListItemButton component="a" href="#simple-list">
-              <Checkbox style={{paddingLeft: 0, color: "primary"}}
-              onClick={() => deleteTodo(todo.id)}/>
-              <ListItemText primary={todo.content} />
-              <ListItemText secondary={todo.date}/>
+              <Checkbox style={{ paddingLeft: 0, color: "primary" }}
+                onClick={() => deleteTodo(todo.id)} />
+              <ListItemText
+                primary={todo.content}
+                secondary={todo.date ? todo.date.toLocaleString("en-US") : ""}
+              />
             </ListItemButton>
           </Card>
         </Grid>
